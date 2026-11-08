@@ -1,0 +1,24 @@
+﻿{% extends 'base.html' %}
+{% block content %}
+<a href="{{ url_for('catalog') }}">← Catálogo</a>
+<article class="panel product-detail">
+  <figure class="product-visual">
+    <img class="product-image" src="{{ url_for('static', filename=p.sabor|product_image) }}" alt="Imagem ilustrativa de {{ p.nome }}" width="1254" height="1254">
+    <figcaption>Imagem ilustrativa</figcaption>
+  </figure>
+  <div>
+    <h1>{{ p.nome }}</h1>
+    <p>{{ p.descricao }}</p>
+    <p>Sabor: {{ p.sabor }}</p>
+    <p><strong>{{ p.preco_centavos|money }}</strong> · Estoque: {{ p.estoque }}</p>
+    {% if p.estoque %}
+    <form action="{{ url_for('cart') }}" method="post">
+      <input type="hidden" name="csrf" value="{{ csrf }}">
+      <input type="hidden" name="produto_id" value="{{ p.id }}">
+      <label>Quantidade<input name="quantidade" type="number" min="1" max="{{ p.estoque }}" value="1" required></label>
+      <button name="acao" value="adicionar">Adicionar ao carrinho</button>
+    </form>
+    {% else %}<p>Esgotado</p>{% endif %}
+  </div>
+</article>
+{% endblock %}

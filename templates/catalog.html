@@ -1,0 +1,38 @@
+﻿{% extends 'base.html' %}
+{% block content %}
+<section class="hero">
+  <div class="hero-copy">
+    <span class="eyebrow">FEITOS PARA SURPREENDER SEU PALADAR</span>
+    <h1>Pequenos bolinhos e grandes sabores.</h1>
+    <p>Escolha seu sabor favorito e acompanhe seu pedido por aqui.</p>
+    <a class="button" href="#sabores">Descobrir sabores ↓</a>
+  </div>
+  <figure class="hero-visual">
+    <img src="{{ url_for('static', filename='images/confeitaria.webp') }}" alt="Confeitaria ilustrativa com balcão azul, cupcakes na vitrine e luz natural" width="1536" height="1024" fetchpriority="high">
+    <figcaption>Uma confeitaria para se inspirar · imagem ilustrativa</figcaption>
+  </figure>
+</section>
+<h2 id="sabores">Nossos cupcakes</h2>
+<p class="muted">Imagens ilustrativas dos sabores.</p>
+<div class="grid">
+  {% for p in products %}
+  <article class="card">
+    <a class="product-image-link" href="{{ url_for('product', pid=p.id) }}" aria-label="Ver detalhes de {{ p.nome }}">
+      <img class="product-image" src="{{ url_for('static', filename=p.sabor|product_image) }}" alt="Imagem ilustrativa de {{ p.nome }}" width="1254" height="1254" loading="lazy" decoding="async">
+    </a>
+    <span class="eyebrow">{{ p.sabor }}</span>
+    <h3><a href="{{ url_for('product', pid=p.id) }}">{{ p.nome }}</a></h3>
+    <p>{{ p.descricao }}</p>
+    <p><strong>{{ p.preco_centavos|money }}</strong> · {{ p.estoque }} disponíveis</p>
+    {% if p.estoque %}
+    <form action="{{ url_for('cart') }}" method="post">
+      <input type="hidden" name="csrf" value="{{ csrf }}">
+      <input type="hidden" name="produto_id" value="{{ p.id }}">
+      <input type="hidden" name="quantidade" value="1">
+      <button name="acao" value="adicionar">Adicionar ao carrinho</button>
+    </form>
+    {% else %}<p class="muted">Esgotado</p>{% endif %}
+  </article>
+  {% else %}<p>Ainda não há cupcakes ativos. Volte em breve!</p>{% endfor %}
+</div>
+{% endblock %}
